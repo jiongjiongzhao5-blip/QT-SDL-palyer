@@ -1,6 +1,52 @@
-# node_modules/
-# .vscode/
-# .idea/
-# dist/
-# .env
-# *.log
+
+build/
+.qtcreator/
+debug/
+release/
+*.pro.user
+*.pro.user.*
+*.qbs.user
+*.qbs.user.*
+*.ui.h
+moc_*.cpp
+qrc_*.cpp
+ui_*.h
+
+# CMake构建文件（如果你用CMake）
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+install_manifest.txt
+
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.a
+*.lib
+*.pdb
+*.exp
+
+*~
+*.bak
+*.tmp
+*.swp
+*.swo
+
+# QtCreator autosave
+*.autosave
+# VS Code
+.vscode/
+*.code-workspace
+# Clion
+.idea/
+*.iml
+
+.DS_Store
+._*
+Thumbs.db
+Desktop.ini
+
+*.log
+.env
