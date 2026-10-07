@@ -122,3 +122,11 @@ target_include_directories(test_message_queue PRIVATE src)
 target_link_libraries(test_message_queue PRIVATE vpl_ffmpeg)
 vpl_apply_common_options(test_message_queue)
 vpl_copy_runtime_dlls(test_message_queue)
+
+add_executable(test_clock
+    tests/test_clock.cpp
+)
+target_include_directories(test_clock PRIVATE src)
+target_link_libraries(test_clock PRIVATE vpl_ffmpeg)
+vpl_apply_common_options(test_clock)
+vpl_copy_runtime_dlls(test_clock)
