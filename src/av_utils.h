@@ -1,7 +1,6 @@
 #ifndef AV_UTILS_H
 #define AV_UTILS_H
 
-
 #include <memory>
 #include <string>
 
@@ -68,4 +67,4 @@ inline void print_av_error(const char* where, int err)
     av_log(nullptr, AV_LOG_ERROR, "%s: %s\n", where, av_err_string(err).c_str());
 }
 
-#endif 
+#endif

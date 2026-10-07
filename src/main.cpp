@@ -8,7 +8,7 @@ int main(int argc, char* argv[])
     QApplication app(argc, argv);
 
     QApplication::setApplicationName(QStringLiteral("voice_player_qt6"));
-    QApplication::setOrganizationName(QStringLiteral("ZJJ"));
+    QApplication::setOrganizationName(QStringLiteral("0voice"));
 
     QMainWindow window;
     window.resize(1280, 800);

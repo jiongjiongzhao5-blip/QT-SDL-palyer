@@ -1,12 +1,10 @@
-
 cmake_minimum_required(VERSION 3.21)
 
 project(voice_player_learn VERSION 0.1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)   
-set(CMAKE_CXX_EXTENSIONS OFF)         
-
+set(CMAKE_CXX_EXTENSIONS OFF)        
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
@@ -17,9 +15,6 @@ endif()
 if(DEFINED ENV{QT_ROOT})
     list(APPEND CMAKE_PREFIX_PATH "$ENV{QT_ROOT}")
 endif()
-
-set(CMAKE_PREFIX_PATH "C:/Apps/QTnew/6.7.3/msvc2022_64" ${CMAKE_PREFIX_PATH})
-
 find_package(Qt6 6.2 REQUIRED COMPONENTS Widgets)
 
 set(FFMPEG_ROOT "" CACHE PATH "FFmpeg 开发包根目录（含 include/、lib/、bin/）")
@@ -54,7 +49,7 @@ foreach(_comp IN LISTS _FFMPEG_COMPONENTS)
     if(NOT _FFMPEG_${_comp}_INC OR NOT _FFMPEG_${_comp}_REL)
         message(FATAL_ERROR "未找到 FFmpeg 组件 ${_comp}（检查 FFMPEG_ROOT 下的 include/lib）。")
     endif()
-
+	
     if(_FFMPEG_${_comp}_DBG)
         list(APPEND _FFMPEG_LIBS
              "$<IF:$<CONFIG:Debug>,${_FFMPEG_${_comp}_DBG},${_FFMPEG_${_comp}_REL}>")
@@ -91,8 +86,6 @@ endfunction()
 
 add_executable(voice_player_learn
     src/main.cpp
-    src/av_utils.h
-    .gitignore
 )
 target_include_directories(voice_player_learn PRIVATE src)
 target_link_libraries(voice_player_learn PRIVATE
@@ -109,3 +102,13 @@ target_include_directories(test_av_utils PRIVATE src)
 target_link_libraries(test_av_utils PRIVATE vpl_ffmpeg)
 vpl_apply_common_options(test_av_utils)
 vpl_copy_runtime_dlls(test_av_utils)
+
+add_executable(test_queues
+    tests/test_queues.cpp
+    src/packet_queue.cpp
+    src/frame_queue.cpp
+)
+target_include_directories(test_queues PRIVATE src)
+target_link_libraries(test_queues PRIVATE vpl_ffmpeg)
+vpl_apply_common_options(test_queues)
+vpl_copy_runtime_dlls(test_queues)

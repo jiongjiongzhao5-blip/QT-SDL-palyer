@@ -48,7 +48,7 @@ static void proveFrameReallyReleased()
         }
         std::printf("  1920x1080 YUV420P 帧缓冲区已分配\n");
 
-        keepAlive = av_buffer_ref(frame->buf[0]);   // 引用计数 1 -> 2
+        keepAlive = av_buffer_ref(frame->buf[0]);
 
         std::printf("  frame 还活着时，缓冲区是唯一持有者吗？ %s\n",
                     av_buffer_is_writable(keepAlive) ? "是(计数=1)" : "否(计数=2)");
@@ -58,7 +58,7 @@ static void proveFrameReallyReleased()
                 av_buffer_is_writable(keepAlive) ? "是(计数=1) —— frame 已确实释放"
                                                  : "否(计数=2) —— frame 泄漏了！");
 
-    av_buffer_unref(&keepAlive);   // 我们自己那一份也要还回去
+    av_buffer_unref(&keepAlive);
 }
 
 int main()
