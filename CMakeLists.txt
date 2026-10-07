@@ -3,8 +3,9 @@ cmake_minimum_required(VERSION 3.21)
 project(voice_player_learn VERSION 0.1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)   
-set(CMAKE_CXX_EXTENSIONS OFF)        
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
@@ -49,7 +50,7 @@ foreach(_comp IN LISTS _FFMPEG_COMPONENTS)
     if(NOT _FFMPEG_${_comp}_INC OR NOT _FFMPEG_${_comp}_REL)
         message(FATAL_ERROR "未找到 FFmpeg 组件 ${_comp}（检查 FFMPEG_ROOT 下的 include/lib）。")
     endif()
-	
+
     if(_FFMPEG_${_comp}_DBG)
         list(APPEND _FFMPEG_LIBS
              "$<IF:$<CONFIG:Debug>,${_FFMPEG_${_comp}_DBG},${_FFMPEG_${_comp}_REL}>")
@@ -112,3 +113,12 @@ target_include_directories(test_queues PRIVATE src)
 target_link_libraries(test_queues PRIVATE vpl_ffmpeg)
 vpl_apply_common_options(test_queues)
 vpl_copy_runtime_dlls(test_queues)
+
+add_executable(test_message_queue
+    tests/test_message_queue.cpp
+    src/message_queue.cpp
+)
+target_include_directories(test_message_queue PRIVATE src)
+target_link_libraries(test_message_queue PRIVATE vpl_ffmpeg)
+vpl_apply_common_options(test_message_queue)
+vpl_copy_runtime_dlls(test_message_queue)
