@@ -149,3 +149,63 @@ target_include_directories(test_decoder PRIVATE src)
 target_link_libraries(test_decoder PRIVATE vpl_ffmpeg)
 vpl_apply_common_options(test_decoder)
 vpl_copy_runtime_dlls(test_decoder)
+
+set(SDL3_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/third_party/SDL3"
+    CACHE PATH "SDL3 开发包根目录")
+
+if(MSVC_CXX_ARCHITECTURE_ID MATCHES "ARM64")
+    set(_SDL3_ARCH arm64)
+elseif(CMAKE_SIZEOF_VOID_P EQUAL 8)
+    set(_SDL3_ARCH x64)
+else()
+    set(_SDL3_ARCH x86)
+endif()
+
+set(_SDL3_INCLUDE_DIR "${SDL3_ROOT}/include")
+set(_SDL3_IMPLIB      "${SDL3_ROOT}/lib/${_SDL3_ARCH}/SDL3.lib")
+set(_SDL3_DLL         "${SDL3_ROOT}/lib/${_SDL3_ARCH}/SDL3.dll")
+
+if(NOT EXISTS "${_SDL3_IMPLIB}")
+    message(FATAL_ERROR "未找到 ${_SDL3_IMPLIB}，请检查 third_party/SDL3 目录。")
+endif()
+
+add_library(SDL3::SDL3 SHARED IMPORTED)
+set_target_properties(SDL3::SDL3 PROPERTIES
+    INTERFACE_INCLUDE_DIRECTORIES "${_SDL3_INCLUDE_DIR}"
+    IMPORTED_IMPLIB               "${_SDL3_IMPLIB}"
+    IMPORTED_LOCATION             "${_SDL3_DLL}")
+message(STATUS "SDL3 (${_SDL3_ARCH}): ${_SDL3_IMPLIB}")
+
+function(vpl_copy_sdl3_dll tgt)
+    if(WIN32)
+        add_custom_command(TARGET ${tgt} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                    "${_SDL3_DLL}" "$<TARGET_FILE_DIR:${tgt}>"
+            COMMENT "拷贝 SDL3.dll")
+    endif()
+endfunction()
+
+add_executable(test_imagescaler
+    tests/test_imagescaler.cpp
+    src/imagescaler.cpp
+    src/decoder.cpp
+    src/packet_queue.cpp
+    src/frame_queue.cpp
+)
+target_include_directories(test_imagescaler PRIVATE src)
+target_link_libraries(test_imagescaler PRIVATE vpl_ffmpeg)
+vpl_apply_common_options(test_imagescaler)
+vpl_copy_runtime_dlls(test_imagescaler)
+
+add_executable(test_audiodevice
+    tests/test_audiodevice.cpp
+    src/audiodevice.cpp
+)
+target_include_directories(test_audiodevice PRIVATE src)
+target_link_libraries(test_audiodevice PRIVATE
+    SDL3::SDL3
+    vpl_ffmpeg
+)
+vpl_apply_common_options(test_audiodevice)
+vpl_copy_runtime_dlls(test_audiodevice)
+vpl_copy_sdl3_dll(test_audiodevice)
