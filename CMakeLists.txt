@@ -150,7 +150,7 @@ target_link_libraries(test_decoder PRIVATE vpl_ffmpeg)
 vpl_apply_common_options(test_decoder)
 vpl_copy_runtime_dlls(test_decoder)
 
-set(SDL3_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/third_party/SDL3"
+set(SDL3_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../third_party/SDL3"
     CACHE PATH "SDL3 开发包根目录")
 
 if(MSVC_CXX_ARCHITECTURE_ID MATCHES "ARM64")
@@ -209,3 +209,16 @@ target_link_libraries(test_audiodevice PRIVATE
 vpl_apply_common_options(test_audiodevice)
 vpl_copy_runtime_dlls(test_audiodevice)
 vpl_copy_sdl3_dll(test_audiodevice)
+
+add_executable(test_ffplayer
+    tests/test_ffplayer_demux.cpp
+    src/ffplayer.cpp
+    src/decoder.cpp
+    src/packet_queue.cpp
+    src/frame_queue.cpp
+    src/message_queue.cpp
+)
+target_include_directories(test_ffplayer PRIVATE src)
+target_link_libraries(test_ffplayer PRIVATE vpl_ffmpeg)
+vpl_apply_common_options(test_ffplayer)
+vpl_copy_runtime_dlls(test_ffplayer)

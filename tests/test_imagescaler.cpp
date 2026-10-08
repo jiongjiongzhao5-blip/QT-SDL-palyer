@@ -149,6 +149,7 @@ int main(int argc, char* argv[])
     PacketQueue vq;
     Decoder dec;
     dec.open(ic->streams[vIdx]);
+    vq.start();
     dec.start(vq, [] {});
 
     AVPacket* pkt = av_packet_alloc();

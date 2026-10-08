@@ -36,7 +36,6 @@ int Decoder::open(AVStream* stream)
 void Decoder::start(PacketQueue& queue, std::function<void()> worker)
 {
     queue_ = &queue;
-    queue_->start();
     thread_ = std::thread(std::move(worker));
 }
 

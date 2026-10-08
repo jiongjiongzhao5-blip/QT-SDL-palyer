@@ -104,6 +104,7 @@ static void testVideoDecode(const std::string& path)
     check(dec.open(vst) == 0, "Decoder::open 成功");
     check(dec.type() == AVMEDIA_TYPE_VIDEO, "Decoder 识别出这是视频流");
 
+    vq.start();
     dec.start(vq, [] {});
 
     std::vector<int64_t> pktPtsList;
@@ -242,6 +243,7 @@ static void testAudioDecode(const std::string& path)
     std::printf("        pkt_timebase = %d/%d（我们显式设成了 stream->time_base）\n",
                 c->pkt_timebase.num, c->pkt_timebase.den);
 
+    aq.start();
     dec.start(aq, [] {});
 
     AVPacketPtr pkt = make_packet();
@@ -324,6 +326,7 @@ static void testThreadedUsage(const std::string& path)
     std::atomic<bool> exited{false};
 
     AVFramePtr frame = make_frame();
+    vq.start();
     dec.start(vq, [&] {
         while (true) {
             const int r = dec.decodeFrame(frame.get());
