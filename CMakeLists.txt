@@ -213,12 +213,35 @@ vpl_copy_sdl3_dll(test_audiodevice)
 add_executable(test_ffplayer
     tests/test_ffplayer_demux.cpp
     src/ffplayer.cpp
+    src/audiodevice.cpp
     src/decoder.cpp
     src/packet_queue.cpp
     src/frame_queue.cpp
     src/message_queue.cpp
 )
 target_include_directories(test_ffplayer PRIVATE src)
-target_link_libraries(test_ffplayer PRIVATE vpl_ffmpeg)
+target_link_libraries(test_ffplayer PRIVATE
+    SDL3::SDL3
+    vpl_ffmpeg
+)
 vpl_apply_common_options(test_ffplayer)
 vpl_copy_runtime_dlls(test_ffplayer)
+vpl_copy_sdl3_dll(test_ffplayer)
+
+add_executable(test_ffplayer_audio
+    tests/test_ffplayer_audio.cpp
+    src/ffplayer.cpp
+    src/audiodevice.cpp
+    src/decoder.cpp
+    src/packet_queue.cpp
+    src/frame_queue.cpp
+    src/message_queue.cpp
+)
+target_include_directories(test_ffplayer_audio PRIVATE src)
+target_link_libraries(test_ffplayer_audio PRIVATE
+    SDL3::SDL3
+    vpl_ffmpeg
+)
+vpl_apply_common_options(test_ffplayer_audio)
+vpl_copy_runtime_dlls(test_ffplayer_audio)
+vpl_copy_sdl3_dll(test_ffplayer_audio)

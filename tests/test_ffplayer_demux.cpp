@@ -181,12 +181,20 @@ int main(int argc, char* argv[])
         const int aq = player.audioQueue().nbPackets();
         const int vq = player.videoQueue().nbPackets();
         std::printf("        队列里的条目数: 音频 %d，视频 %d\n", aq, vq);
-        std::printf("        参考值(真实包数): 音频 %d，视频 %d\n", ref.audioPkts, ref.videoPkts);
+        std::printf("        投递总量      : 音频 %d，视频 %d\n",
+                    ref.audioPkts + 2, ref.videoPkts + 2);
 
-        check(aq == ref.audioPkts + 2,
-              "★ 音频队列条目数 = 真实音频包数 + flush 标记 + EOF 空包");
         check(vq == ref.videoPkts + 2,
-              "★ 视频队列条目数 = 真实视频包数 + flush 标记 + EOF 空包");
+              "★ 视频队列条目数 = 真实视频包数 + flush 标记 + EOF 空包（当前尚无消费者）");
+
+        check(player.audioQueue().serial() >= 1, "音频队列已被启动（serial >= 1）");
+        check(aq <= ref.audioPkts + 2, "音频队列存量不超过投递总量");
+        msleep(300);
+        const auto info = player.audioOutInfo();
+        std::printf("        音频解码线程已解出 %d 帧（说明消费者确实在工作）\n",
+                    info.decodedFrames);
+        check(info.decodedFrames > 0,
+              "★ 音频链路有消费者在取包 —— 分发确实发生了，只是被即时消耗了");
     }
 
     section("[4] ★ EOF 信号验证（M6 修复的直接证据）");

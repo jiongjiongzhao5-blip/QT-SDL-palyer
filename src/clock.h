@@ -19,6 +19,7 @@ public:
         pts_          = std::nan("");
         pts_drift_    = std::nan("");
         last_updated_ = 0.0;
+        paused_       = false;
     }
 
     void set(double pts)
@@ -38,8 +39,23 @@ public:
     double get() const
     {
         std::lock_guard<std::mutex> lock(mutex_);
+        if (paused_)
+            return pts_;
         const double now = av_gettime_relative() / 1000000.0;
         return pts_drift_ + now * speed_;
+    }
+
+    void setPaused(bool paused)
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (paused_ == paused)
+            return;
+        if (!paused) {
+            const double curr = pts_;
+            const double now  = av_gettime_relative() / 1000000.0;
+            pts_drift_ = curr - now * speed_;
+        }
+        paused_ = paused;
     }
 
     void setSpeed(double speed)
@@ -72,6 +88,7 @@ private:
     double pts_drift_    = 0.0;
     double last_updated_ = 0.0;
     double speed_        = 1.0;
+    bool   paused_       = false;
 };
 
 #endif
